@@ -96,7 +96,7 @@ class ApplicationController extends Controller
             }
 
             $updatedCount = 0;
-            $whatsapp = new WhatsAppService();
+           
 
             foreach ($statuses as $applicationId => $status) {
                 $application = Application::find($applicationId);
@@ -118,17 +118,7 @@ class ApplicationController extends Controller
                             ));
                         }
 
-                        // Optional: send WhatsApp for rejected
-                        $phone = match (strtolower($application->application_type)) {
-                            'student' => $user->student->phone ?? null,
-                            'beneficiary' => $user->beneficiary->phone_number ?? null,
-                            default => null,
-                        };
-
-                        if ($phone) {
-                            $msg = "⚠️ Hi {$user->name}, your {$application->application_type} application has been REJECTED. Please contact support for details.";
-                            $whatsapp->sendMessage($phone, $msg);
-                        }
+                        
 
                         continue;
                     }
