@@ -373,7 +373,7 @@
                 pr_month: document.getElementById('pr_month')?.value || '',
             };
         };
-
+        
         const updateExportLinkPR = () => {
             const params = collectParamsPR();
             const queryString = new URLSearchParams(params).toString();
