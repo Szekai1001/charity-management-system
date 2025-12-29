@@ -59,9 +59,11 @@ class GenericReportExport implements FromView
                 ]);
 
             case 'purchaseRequirement':
-                $current = now();
-                $year = $current->year;
-                $month = $current->month;
+                $year = $this->request->get('pr_year', now()->year);
+                $month = $this->request->get('pr_month', now()->month);
+
+                if (empty($year)) $year = now()->year;
+                if (empty($month)) $month = now()->month;
 
                 $purchaseRequirements = ReportService::getPurchaseRequirement($year, $month);
 
