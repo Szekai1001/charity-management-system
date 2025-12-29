@@ -148,6 +148,7 @@ class DssHelper
 
     public static function getFamilyScore($occupation)
     {
+        $occupation = strtolower(trim($occupation));
         if (in_array($occupation, ['unemployed', 'unable_work'])) {
             return 10;
         } elseif (in_array($occupation, ['student', 'child_infant', 'housewife', 'retired'])) {
