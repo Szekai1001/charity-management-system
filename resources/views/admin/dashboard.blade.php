@@ -157,6 +157,7 @@
                                 class="btn btn-sm {{ !request()->has('lastWeek') ? 'btn-primary' : 'btn-outline-primary' }}">
                                 This Week
                             </a>
+
                             <a href="{{ route('admin.dashboard', ['lastWeek' => 1]) }}"
                                 class="btn btn-sm {{ request()->has('lastWeek') ? 'btn-primary' : 'btn-outline-primary' }}">
                                 Last Week

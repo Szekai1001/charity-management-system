@@ -78,9 +78,9 @@ class DashboardController extends Controller
         // ------------------------------------------------------------
         // WEEKLY ATTENDANCE FILTER: thisWeek / lastWeek
         // ------------------------------------------------------------
-        $start = $request->filled('thisWeek')
-            ? now()->startOfWeek()
-            : now()->subWeek()->startOfWeek();
+        $start = $request->has('lastWeek')
+            ? now()->subWeek()->startOfWeek()  // If clicked 'Last Week', go to Dec 22
+            : now()->startOfWeek();
 
         $weekDates = collect();
         for ($i = 0; $i < 5; $i++) {
