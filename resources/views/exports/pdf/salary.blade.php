@@ -67,18 +67,33 @@
             <th class="text-center">Payment Status</th>
         </tr>
     </thead>
+    @if($salaryDetails->count() > 0)
+    <tr style="background-color: #f8f9fa; font-weight: bold;">
+        <td colspan="3" align="right">TOTAL PAYOUT:</td>
+        <td class="text-end">RM {{ number_format($salaryDetails->sum('salary'), 2) }}</td>
+        <td colspan="2"></td>
+    </tr>
+    @endif
     <tbody>
         @forelse($salaryDetails as $salary)
         <tr>
             <td>{{ $salary->teacher->id }}</td>
             <td>{{ $salary->teacher->name }}</td>
-            <td class="text-center">{{ $salary->hours_worked }}</td>
+            <td class="text-center">
+                @php
+                $total = $salary->hours_worked;
+                $hours = floor($total);
+                $minutes = round(($total - $hours) * 60);
+                @endphp
+
+                {{ $hours }}h {{ $minutes }}m
+            </td>
             <td class="text-end">RM {{ number_format($salary->salary, 2) }}</td>
             <td class="text-center">{{ $salary->payment_date ?? '-' }}</td>
             <td class="text-center">{{ $salary->payment_status }}</td>
         </tr>
         @empty
-         <tr>
+        <tr>
             <td colspan="6" align="center" style="padding: 30px; color: #888;">
                 No records found matching the selected criteria.
             </td>

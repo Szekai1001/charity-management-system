@@ -40,6 +40,7 @@
                     <div class="col-md-4">
                         <label class="form-label fw-medium mb-1">New Hourly Rate <span class="text-danger">*</span></label>
                         <div class="input-group">
+
                             <span class="input-group-text bg-white text-muted border-end-0">RM</span>
                             <input type="number" step="0.01" id="payrate" name="payrate"
                                 class="form-control border-start-0 ps-0"
@@ -55,7 +56,8 @@
                     </div>
 
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-medium">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-medium"
+                            onclick="return confirm('Are you sure? After clicking this, the salary will be visible to the teacher.');">
                             Calculate
                         </button>
                     </div>
