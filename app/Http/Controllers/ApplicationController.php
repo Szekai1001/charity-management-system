@@ -167,12 +167,6 @@ class ApplicationController extends Controller
 
                             usleep(1000000); // 0.3s delay to avoid Mailtrap rate limit
                         }
-
-                        // Send WhatsApp
-                        if ($phone) {
-                            $msg = "🎉 Hi {$user->name}, your {$application->application_type} application has been APPROVED. Please log in to your account for details.";
-                            $whatsapp->sendMessage($phone, $msg);
-                        }
                     }
                 }
             }
