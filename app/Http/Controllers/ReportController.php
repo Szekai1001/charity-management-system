@@ -81,8 +81,11 @@ class ReportController extends Controller
 
 
             case 'purchaseRequirement':
-                $year = request('year', now()->year);
-                $month = request('month', now()->month);
+                $year = request('pr_year', now()->year);
+                $month = request('pr_month', now()->month);
+
+                if (!$year) $year = now()->year;
+                if (!$month) $month = now()->month;
 
                 $purchaseRequirements = ReportService::getPurchaseRequirement($year, $month);
                 $view = 'exports.pdf.purchaseRequirement';
