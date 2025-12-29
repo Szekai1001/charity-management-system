@@ -121,12 +121,12 @@
                             </dd>
 
                             <dt class="col-sm-4">Residential Status</dt>
-                            <dd class="col-sm-8">{{ $application->user->student->residential}}
+                            <dd class="col-sm-8">{{ $application->user->student->residential_status}}
 
                             <dt class="col-sm-4">Basic Amenities Access</dt>
                             <dd class="col-sm-8">
-                                @if(!empty($application->user->student->amenities))
-                                {{ implode(', ', $application->user->student->amenities) }}
+                                @if(!empty($application->user->student->basic_amenities_access))
+                                {{ implode(', ', $application->user->student->basic_amenities_access) }}
                                 @else
                                 N/A
                                 @endif

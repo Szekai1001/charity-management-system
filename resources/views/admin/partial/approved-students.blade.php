@@ -261,12 +261,12 @@
                             <dd class="col-sm-9">{{ $approvedStudent->user->student->reason ?? 'N/A' }}</dd>
 
                             <dt class="col-sm-3">Residential Status</dt>
-                            <dd class="col-sm-9">{{ $approvedStudent->user->student->residential }}</dd>
+                            <dd class="col-sm-9">{{ $approvedStudent->user->student->residential_status }}</dd>
 
                             <dt class="col-sm-3">Basic Amenities Access</dt>
                             <dd class="col-sm-9">
-                                @if(!empty($approvedStudent->user->student->amenities))
-                                {{ implode(', ', $approvedStudent->user->student->amenities) }}
+                                @if(!empty($approvedStudent->user->student->basic_amenities_access))
+                                {{ implode(', ', $approvedStudent->user->student->basic_amenities_access) }}
                                 @else
                                 N/A
                                 @endif
