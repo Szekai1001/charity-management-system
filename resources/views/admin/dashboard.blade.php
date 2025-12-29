@@ -152,9 +152,15 @@
                 <form action="{{ route('dashboardAttendance.filter') }}" method="GET">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0 text-secondary">Attendance Trends</h6>
-                        <div>
-                            <button type="submit" class="btn btn-primary btn-sm" name="thisWeek">This Week</button>
-                            <button type="submit" class="btn btn-primary btn-sm" name="lastWeek">Last Week</button>
+                        <div class="btn-group" role="group">
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="btn btn-sm {{ !request()->has('lastWeek') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                This Week
+                            </a>
+                            <a href="{{ route('admin.dashboard', ['lastWeek' => 1]) }}"
+                                class="btn btn-sm {{ request()->has('lastWeek') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                Last Week
+                            </a>
                         </div>
                     </div>
                 </form>
