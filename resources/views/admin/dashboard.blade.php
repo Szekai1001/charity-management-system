@@ -327,7 +327,11 @@
                     }
                 },
                 y: {
-                    min: 50,
+                    beginAtZero: true, // Starts at 0
+                    ticks: {
+                        stepSize: 1, // Since you only have 5 students, show 1, 2, 3...
+                        precision: 0 // Don't show decimals like 1.5
+                    },
                     border: {
                         dash: [4, 4]
                     }
