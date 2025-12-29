@@ -358,8 +358,6 @@
         </div>
     </div>
 
-    @vite('resources/js/attendance.js')
-
 </body>
 
 </html>
