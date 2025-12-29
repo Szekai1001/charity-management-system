@@ -101,7 +101,7 @@ class StudentController extends Controller
         // Validate form data
         $validated = $request->validate(
 
-            
+
             [
                 // Student Info
                 'sName' => 'required|string|max:255',
@@ -221,7 +221,6 @@ class StudentController extends Controller
             'control_id' => $request->control_id,
             'application_type' => 'Student',
             'dss_score' => 0,
-            '' => 'processing',
             'status' => 'processing',
         ]);
 
@@ -255,9 +254,9 @@ class StudentController extends Controller
             'city' => 'Batu Pahat',
             'state' => 'Johor',
             'zip' => $request->zip,
-            'residential' => $request->residential,
+            'residential_status' => $request->residential,
             'reason' => $request->reason,
-            'amenities' => $request->input('amenities', []),
+            'basic_amenities_access' => $request->input('amenities', []),
             'family_income' => $request->income === 'yes' ? $request->monthly_income : 'no',
             'assist_from_child' => $request->childAssist === 'yes' ? $request->childAssistValue : 'no',
             'government_assist' => $request->govAssist === 'yes' ? $request->govAssistValue : 'no',
@@ -349,17 +348,12 @@ class StudentController extends Controller
         }
 
 
-        $application->load([
-            'user.student.familyMember',
-            'user.student.guardian',
-            'user.student.otherIncome'
-        ]);
+        $student->load(['familyMember', 'guardian', 'otherIncome', 'otherExpense']);
 
-        // Call DSS helper directly
-        $scores = DssHelper::calculateScores($application, $request);
+        // Pass the $student object directly to the helper
+        $scores = DssHelper::calculateScores($student);
 
         $application->update(['dss_score' => $scores]);
-
 
         return redirect()->route('application.success');
     }

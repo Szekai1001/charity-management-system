@@ -6,26 +6,20 @@ use Illuminate\Http\Request;
 
 class DssHelper
 {
-    public static function calculateScores($application, $request)
+    public static function calculateScores($person)
     {
         $scores = 0;
 
-        if ($application->user->student) {
-            $person = $application->user->student;
-        }
-        // Or beneficiary
-        elseif ($application->user->beneficiary) {
-            $person = $application->user->beneficiary;
-        } else {
-            return $scores; // no person linked
+        if (!$person) {
+            return 0;
         }
 
-        // Call your helper
         $scores += self::calculateIncomeScores($person);
         $scores += self::calculateExpenseScores($person);
         $scores += self::calculateFamilyScore($person);
         $scores += self::calculateHousingScore($person);
-        $scores += self::calculateAmenitiesScore($request);
+        // Changed to use the model attribute instead of Request
+        $scores += self::calculateAmenitiesScore($person);
 
         return $scores;
     }
@@ -33,22 +27,17 @@ class DssHelper
     public static function calculateIncomeScores($person)
     {
         $totalIncome = 0;
+        $fields = ['family_income', 'assist_from_child', 'government_assist', 'insurance_pay'];
 
-        $incomeFields = [
-            $person->family_income,
-            $person->assist_from_child,
-            $person->government_assist,
-            $person->insurance_pay,
-        ];
-
-        foreach ($incomeFields as $amount) {
-            if (is_numeric($amount)) {
-                $totalIncome += (float) $amount;
+        foreach ($fields as $field) {
+            if (is_numeric($person->$field)) {
+                $totalIncome += (float) $person->$field;
             }
         }
 
         if ($person->otherIncome) {
             foreach ($person->otherIncome as $income) {
+                // Access the specific value column
                 if (is_numeric($income->other_income_source_value)) {
                     $totalIncome += (float) $income->other_income_source_value;
                 }
@@ -61,31 +50,25 @@ class DssHelper
 
     public static function calculateExpenseScores($person)
     {
-        $score = 0;
+        $totalExpense = 0;
+        $fields = ['mortgage_expense', 'transport_loan', 'utility_expense', 'education_expense', 'family_expense'];
 
-        $expenses = [
-            $person->mortgage_expense,
-            $person->transport_loan,
-            $person->utility_expense,
-            $person->education_expense,
-            $person->family_expense,
-        ];
-
-        foreach ($expenses as $expense) {
-            if (is_numeric($expense)) {
-                $score += (float) $expense;
+        foreach ($fields as $field) {
+            if (is_numeric($person->$field)) {
+                $totalExpense += (float) $person->$field;
             }
         }
 
         if ($person->otherExpense) {
             foreach ($person->otherExpense as $expense) {
-                if (is_numeric($expense)) {
-                    $score += (float) $expense;
+                // FIXED: Access the value property instead of the object
+                if (is_numeric($expense->other_expense_value)) {
+                    $totalExpense += (float) $expense->other_expense_value;
                 }
             }
         }
 
-        return min(self::getExpenseScore($score), 20);
+        return min(self::getExpenseScore($totalExpense), 20);
     }
 
 
@@ -93,35 +76,40 @@ class DssHelper
     {
         $score = 0;
 
+        // 1. Score additional family members
         if ($person->familyMember) {
             foreach ($person->familyMember as $member) {
-                if ($member->occupation) {
-                    $score += self::getFamilyScore($member->occupation);
-                }
+                $score += self::getFamilyScore($member->occupation);
             }
         }
 
-        if ($person->guardian && $person->guardian->occupation) {
+        // 2. Score the Primary Provider
+        if (!empty($person->occupation)) {
+            // It's a Beneficiary (Adult)
+            $score += self::getFamilyScore($person->occupation);
+        } elseif ($person->guardian && !empty($person->guardian->occupation)) {
+            // It's a Student (Minor)
             $score += self::getFamilyScore($person->guardian->occupation);
         }
 
-        return min($score, 15); // ✅ CAP
+        return min($score, 15);
     }
 
 
     public static function calculateHousingScore($person)
     {
-        if ($person->residential) {
-            return min(self::getHousingScore($person->residential), 15);
+        if ($person->residential_status) {
+            return min(self::getHousingScore($person->residential_status), 15);
         }
 
         return 0;
     }
 
 
-    public static function calculateAmenitiesScore(Request $request)
+    public static function calculateAmenitiesScore($person)
     {
-        $amenities = $request->input('amenities', []);
+        // Use the data saved in the database
+        $amenities = $person->basic_amenities_access ?? [];
         return min(self::getAmenitiesAccessScore($amenities), 10);
     }
 

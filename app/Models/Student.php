@@ -28,8 +28,8 @@ class Student extends Model
         'zip',
 
         //Living Conditions
-        'residential',
-        'amenities',
+        'residential_status',
+        'basic_amenities_access',
         'family_income',
         'assist_from_child',
         'government_assist',
@@ -167,8 +167,7 @@ class Student extends Model
     }
 
     protected $casts = [
-        'amenities' => 'array',
-        'amenities' => 'array',
+        'basic_amenities_access' => 'array',
         'family_income' => 'float',
         'assist_from_child' => 'float',
         'government_assist' => 'float',

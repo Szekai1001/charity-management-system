@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('zip');
 
             // Living Conditions
-            $table->string('residential'); // Own House, Rent, etc.
+            $table->string('residential_status'); // Own House, Rent, etc.
             $table->string('family_income');
             $table->string('assist_from_child');
             $table->string('government_assist');
@@ -48,7 +48,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
 
             // Amenities (optional: store as JSON)
-            $table->json('amenities')->nullable();
+            $table->json('basic_amenities_access')->nullable();
             $table->string('qr_code')->nullable();
 
             $table->timestamps();

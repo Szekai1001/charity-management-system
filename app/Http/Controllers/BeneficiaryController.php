@@ -24,7 +24,7 @@ class BeneficiaryController extends Controller
     {
         $userID = Auth::id();
 
-        $formControl = FormControl::where('form_type', 'beneficiary') 
+        $formControl = FormControl::where('form_type', 'beneficiary')
             ->whereDate('open_date', '<=', now())
             ->whereDate('close_date', '>=', now())
             ->first(); //retrieve the first matching record  
@@ -39,7 +39,7 @@ class BeneficiaryController extends Controller
 
         $religions = ['Christianity', 'Islam', 'Hinduism', 'Buddhism', 'Other'];
 
-         $housingTypes = [
+        $housingTypes = [
             'own_house' => 'Own House',
             'rent_house' => 'Rented House',
             'rent_room' => 'Rented Room (Bilik Sewa)',
@@ -222,7 +222,7 @@ class BeneficiaryController extends Controller
             'user_id' => $userId,
             'control_id' => $request->control_id,
             'application_type' => 'Beneficiary',
-            'scores' => 0,
+            'dss_score' => 0,
             'status' => 'processing',
         ]);
 
@@ -306,16 +306,13 @@ class BeneficiaryController extends Controller
             }
         }
 
-        $application->load([
-            'user.beneficiary.familyMember',
-            'user.beneficiary.otherIncome'
-        ]);
-        // Call DSS helper directly
-        $scores = DssHelper::calculateScores($application, $request);
+        $beneficiary->load(['familyMember', 'otherIncome', 'otherExpense']);
+
+        // Call DSS helper using the beneficiary instance directly
+        $scores = DssHelper::calculateScores($beneficiary);
 
         $application->update(['dss_score' => $scores]);
 
         return redirect()->route('application.success');
     }
-
 }
