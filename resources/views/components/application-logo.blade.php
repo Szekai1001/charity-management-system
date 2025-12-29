@@ -1,0 +1,1 @@
+<img src="{{ asset('image/logoRemove.png') }}" alt="Your Logo" {{ $attributes }} style="width: 200px; height: 200px;">

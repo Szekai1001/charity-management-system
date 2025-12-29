@@ -1,0 +1,52 @@
+/* Navbar stays full width but shifts with sidebar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    /* same as expanded sidebar width */
+    height: 80px;
+    width: calc(100% - 250px);
+    /* take remaining space */
+    z-index: 1030;
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 1020;
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed .label,
+.sidebar.collapsed h4,
+.sidebar.collapsed .title {
+    display: none;
+}
+
+.main-content {
+    margin-left: 280px;
+    padding-top: 100px;
+    /* same as navbar height */
+    transition: margin-left 0.3s ease, padding-top 0.3s ease;
+}
+
+
+.sidebar.collapsed~.navbar {
+    left: 70px;
+    width: calc(100% - 70px);
+}
+
+.sidebar.collapsed~.main-content {
+    margin-left: 90px;
+    padding-top: 100px;
+    /* keep it consistent */
+}
