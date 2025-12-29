@@ -64,11 +64,8 @@ class UserManagementController extends Controller
             ->when($query, function ($q) use ($query) {
                 $q->where(function ($q2) use ($query) {
                     $q2->whereHas('user.student', function ($sub) use ($query) {
-                        $sub->where('name', 'like', "%{$query}%");
-
-                        if (is_numeric($query)) {
-                            $sub->orWhere('id', $query);
-                        }
+                        $sub->where('name', 'like', "%{$query}%")
+                        ->orWhere('ic', 'like', "%{$query}%");
                     })
                         ->orWhereHas('user', function ($sub) use ($query) {
                             $sub->where('email', 'like', "%{$query}%");
@@ -101,11 +98,8 @@ class UserManagementController extends Controller
                 $q->where(function ($q2) use ($query) {
 
                     $q2->whereHas('teacher', function ($sub) use ($query) {
-                        $sub->where('name', 'like', "%{$query}%");
-
-                        if (is_numeric($query)) {
-                            $sub->orWhere('id', $query);
-                        }
+                        $sub->where('name', 'like', "%{$query}%")
+                        ->orWhere('ic', 'like', "%{$query}%");
                     })
                         ->orWhere('email', 'like', "%{$query}%");
                 });
@@ -126,12 +120,8 @@ class UserManagementController extends Controller
 
                     // 🔹 Search by BENEFICIARY (name / id)
                     $q2->whereHas('user.beneficiary', function ($sub) use ($query) {
-                        $sub->where('name', 'like', "%{$query}%");
-
-                        // Exact match for beneficiary ID
-                        if (is_numeric($query)) {
-                            $sub->orWhere('id', $query);
-                        }
+                        $sub->where('name', 'like', "%{$query}%")
+                        ->orWhere('ic', 'like', "%{$query}%");
                     })
 
                         // 🔹 OR search by USER email

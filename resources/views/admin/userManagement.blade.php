@@ -74,7 +74,7 @@
                         <span class="input-group-text" id="search-addon">
                             <i class="bi bi-search"></i> <!-- Needs Bootstrap Icons -->
                         </span>
-                        <input type="text" data-type="student" data-target="student-table" placeholder="Search by email, name, or id ..." class="form-control filter-input">
+                        <input type="text" data-type="student" data-target="student-table" placeholder="Search by email, name, or IC ..." class="form-control filter-input">
                     </div>
                 </div>
 
@@ -149,7 +149,7 @@
                         <span class="input-group-text" id="search-addon">
                             <i class="bi bi-search"></i> <!-- Needs Bootstrap Icons -->
                         </span>
-                        <input type="text" data-type="teacher" data-target="teacher-table" placeholder="Search by email, name, or id ..." class="form-control search-input">
+                        <input type="text" data-type="teacher" data-target="teacher-table" placeholder="Search by email, name, or IC ..." class="form-control search-input">
                     </div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                         <span class="input-group-text" id="search-addon">
                             <i class="bi bi-search"></i> <!-- Needs Bootstrap Icons -->
                         </span>
-                        <input type="text" data-type="beneficiary" data-target="beneficiary-table" placeholder="Search by email, name, or id ..." class="form-control search-input">
+                        <input type="text" data-type="beneficiary" data-target="beneficiary-table" placeholder="Search by email, name, or IC ..." class="form-control search-input">
                     </div>
                 </div>
             </div>
