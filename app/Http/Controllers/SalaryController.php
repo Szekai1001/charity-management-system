@@ -178,7 +178,7 @@ class SalaryController extends Controller
             'message' => "Salary successfully calculated for {$salary_month}-{$salary_year}.",
         ]);
 
-        return redirect()->route('salary')
+        return redirect()->route('salary', ['salary_month_year' => $salary_year_month])
             ->with('success', 'Salaries calculated and stored successfully');
     }
 
