@@ -247,25 +247,25 @@
         <div class="row justify-content-center">
             <div class="col-md-4 col-lg-3">
                 <div class="team-card">
-                    <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=fe7e7a&color=fff&size=200" alt="Team Member" class="team-img">
-                    <h5 class="fw-bold mb-1">Mr. Ali Ahmad</h5>
+                    <img src="{{ asset('image/chairperson.png') }}" alt="Team Member" class="team-img">
+                    <h5 class="fw-bold mb-1">Mr. Tee Swee Kiam</h5>
                     <p class="text-muted small">Chairman</p>
                 </div>
             </div>
 
             <div class="col-md-4 col-lg-3">
                 <div class="team-card">
-                    <img src="https://ui-avatars.com/api/?name=Sarah+Lee&background=fe7e7a&color=fff&size=200" alt="Team Member" class="team-img">
-                    <h5 class="fw-bold mb-1">Ms. Sarah Lee</h5>
-                    <p class="text-muted small">Head of Education</p>
+                    <img src="{{ asset('image/secondChairperson.png') }}" alt="Team Member" class="team-img">
+                    <h5 class="fw-bold mb-1">Mr. Edwin Lim Weng Yee</h5>
+                    <p class="text-muted small">Vice ChairPerson</p>
                 </div>
             </div>
 
             <div class="col-md-4 col-lg-3">
                 <div class="team-card">
-                    <img src="https://ui-avatars.com/api/?name=Tan+Ah+Meng&background=fe7e7a&color=fff&size=200" alt="Team Member" class="team-img">
-                    <h5 class="fw-bold mb-1">Mr. Tan Ah Meng</h5>
-                    <p class="text-muted small">Head of Welfare</p>
+                    <img src="{{ asset('image/diana.png') }}" alt="Team Member" class="team-img">
+                    <h5 class="fw-bold mb-1">Ms. Diana Lau</h5>
+                    <p class="text-muted small">Executive Officer</p>
                 </div>
             </div>
         </div>
