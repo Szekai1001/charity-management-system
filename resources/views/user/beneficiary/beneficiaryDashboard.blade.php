@@ -422,7 +422,7 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 18 ? 'Good Afternoon' : 'Good
             <p class="text-muted mb-4 small px-0 px-md-5">You haven't submitted a supply request for this month yet. <br class="d-none d-md-block">Apply now to receive your monthly support.</p>
 
             {{-- Make sure this route matches your actual route name --}}
-            <a href="{{ route('supplyRequest.show') }}" class="btn btn-primary rounded-pill px-4 fw-bold w-100 w-md-auto">
+            <a href="{{ route('supplyRequest.create') }}" class="btn btn-primary rounded-pill px-4 fw-bold w-100 w-md-auto">
                 <i class="bi bi-plus-lg me-2"></i>Apply Now
             </a>
         </div>
