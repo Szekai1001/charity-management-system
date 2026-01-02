@@ -21,16 +21,17 @@ class BeneficiaryDashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        $now = Carbon::now(); // Capture current time once to ensure consistency
+
         // --- 1. Existing Logic: Form Control Timer ---
         $formControl = FormControl::where('form_type', 'monthly_supply')
-            ->whereDate('open_date', '<=', now())
-            ->whereDate('close_date', '>=', now())
+            ->whereDate('open_date', '<=', $now)
+            ->whereDate('close_date', '>=', $now)
             ->first();
 
         $remainDays = null;
         $remainInTime = null;
         $progressPercentage = null;
-        $now = Carbon::now();
 
         if ($formControl) {
             $closeDate = Carbon::parse($formControl->close_date);
@@ -49,38 +50,39 @@ class BeneficiaryDashboardController extends Controller
             $progressPercentage = $totalDays > 0 ? round(($passedDays / $totalDays) * 100) : 0;
         }
 
-        // --- 2. Existing Logic: Fetch Latest Request ---
+        // --- 2. UPDATED LOGIC: Fetch Current Month's Request ---
+        // We add whereMonth and whereYear to ensure we only get a request for THIS month.
         $supplyRequest = SupplyRequest::where('beneficiary_id', $beneficiary->id)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
             ->with(['package.items'])
-            ->latest()
             ->first();
 
-        // --- 3. NEW LOGIC: Delivery/Pickup Reminder ---
+        // Note: If your application cycle crosses months (e.g. 25th to 5th), 
+        // you should check 'created_at' against the $formControl dates instead.
+        // Assuming standard monthly calendar:
+
+        // --- 3. Existing Logic: Delivery/Pickup Reminder ---
         $deliveryReminder = null;
 
-        // Find an active request that is approved but not yet completed
-        // We assume 'delivery_date' is a relationship. We check if it exists.
+        // We keep this query loose (latest approved) just in case a delivery 
+        // from late last month is scheduled for the 1st of this month.
         $upcomingRequest = SupplyRequest::where('beneficiary_id', $beneficiary->id)
-            ->where('distribution_status', 'approved') // Only check approved requests
-            ->whereHas('delivery_date') // Ensure there is a date attached
+            ->where('distribution_status', 'approved')
+            ->whereHas('delivery_date')
             ->with('delivery_date')
             ->latest()
             ->first();
 
         if ($upcomingRequest && $upcomingRequest->delivery_date) {
-            // Assuming the relationship 'delivery_date' has a column named 'date' or 'schedule_date'
-            // Adjust 'date' below to match your actual database column name in the delivery_dates table
             $dateValue = $upcomingRequest->delivery_date->date ?? $upcomingRequest->delivery_date->created_at;
-
             $scheduleDate = Carbon::parse($dateValue);
 
-            // Check if the date is in the future or today
             if ($scheduleDate->isToday() || $scheduleDate->isFuture()) {
                 $diffInDays = $now->diffInDays($scheduleDate, false);
 
-                // Define "Near" as within 3 days
                 if ($diffInDays <= 5) {
-                    $type = ucfirst($upcomingRequest->distribution_method ?? 'Delivery/Pickup'); // delivery or pickup
+                    $type = ucfirst($upcomingRequest->distribution_method ?? 'Delivery/Pickup');
 
                     if ($scheduleDate->isToday()) {
                         $deliveryReminder = "🔔 Reminder: Your $type is scheduled for TODAY!";
@@ -103,10 +105,9 @@ class BeneficiaryDashboardController extends Controller
             'supplyRequest',
             'remainInTime',
             'progressPercentage',
-            'deliveryReminder' // <--- Pass the new variable here
+            'deliveryReminder'
         ));
     }
-
     public function viewPastApplication(Request $request)
     {
         $beneficiary = Auth::user()->beneficiary;

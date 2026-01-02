@@ -400,7 +400,7 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 18 ? 'Good Afternoon' : 'Good
                         <div class="min-w-0">
                             <span class="d-block small text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Available Time</span>
                             <span class="fw-bold text-dark d-block">
-                              Morning (9AM - 12PM)
+                                Morning (9AM - 12PM)
                             </span>
                         </div>
                     </div>
@@ -413,18 +413,25 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 18 ? 'Good Afternoon' : 'Good
     {{-- NEW: Empty State Design --}}
     <div class="card rounded-4 shadow-sm border-0 py-4 py-md-5">
         <div class="card-body text-center p-3 p-md-4">
-            <div class="mb-3">
-                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                    <i class="bi bi-box-seam text-secondary" style="font-size: 2rem;"></i>
-                </div>
-            </div>
-            <h5 class="fw-bold text-dark">No Active Request</h5>
-            <p class="text-muted mb-4 small px-0 px-md-5">You haven't submitted a supply request for this month yet. <br class="d-none d-md-block">Apply now to receive your monthly support.</p>
+            {{-- ... existing icon and text ... --}}
 
-            {{-- Make sure this route matches your actual route name --}}
-            <a href="{{ route('supplyRequest.create') }}" class="btn btn-primary rounded-pill px-4 fw-bold w-100 w-md-auto">
+            <h5 class="fw-bold text-dark">No Active Request</h5>
+            <p class="text-muted mb-4 small px-0 px-md-5">
+                You haven't submitted a supply request for this month yet. <br class="d-none d-md-block">
+                Apply now to receive your monthly support.
+            </p>
+
+            <a href="{{ route('supplyRequest.create') }}" class="btn btn-primary rounded-pill px-4 fw-bold w-100 w-md-auto mb-3 mb-md-0">
                 <i class="bi bi-plus-lg me-2"></i>Apply Now
             </a>
+
+            {{-- ADD THIS LINK FOR HISTORY ACCESS --}}
+            <div class="mt-3">
+                <a href="{{ route('beneficiary.viewPastApplication') }}" class="text-muted small text-decoration-underline">
+                    View Past History
+                </a>
+            </div>
+
         </div>
     </div>
     @endif
