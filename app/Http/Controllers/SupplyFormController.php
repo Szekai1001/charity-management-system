@@ -214,7 +214,6 @@ class SupplyFormController extends Controller
 
             $updatedCount = 0;
 
-            // Update all supply request statuses
             foreach ($statuses as $supplyRequestId => $status) {
                 $supplyRequest = \App\Models\SupplyRequest::find($supplyRequestId);
 
@@ -222,31 +221,36 @@ class SupplyFormController extends Controller
                     $supplyRequest->distribution_status = $status;
                     $supplyRequest->save();
 
-                    // Log activity for the beneficiary
-                    Notification::create([
-                        'user_id' => $supplyRequest->beneficiary->user_id, // Log to the request owner
-                        'title' => 'Supply Request Update',
-                        'message' => "Your monthly supply application status has been updated to " . ucfirst($status) . ".",
-                        'type' => 'supply_request',
-                        'is_read' => 0,
-                    ]);
+                    // Send notification only to the specific beneficiary
+                    if ($supplyRequest->beneficiary) {
+                        Notification::create([
+                            'user_id' => $supplyRequest->beneficiary->user_id,
+                            'title' => 'Supply Request Update',
+                            'message' => "Your monthly supply application status has been updated to " . ucfirst($status) . ".",
+                            'type' => 'supply_request',
+                            'is_read' => 0,
+                        ]);
+                    }
 
                     $updatedCount++;
                 }
             }
 
-            // Recalculate totals after all updates
-            $year  = $supplyRequest->created_at->year;
-            $month = $supplyRequest->created_at->month;
-            $purchaseRequirements = ReportService::getPurchaseRequirement($year, $month);
-            $totalPrice = $purchaseRequirements->sum('subtotal');
+            // Recalculate totals using the first supply request in the batch
+            $firstRequestId = array_key_first($statuses);
+            $firstRequest = \App\Models\SupplyRequest::find($firstRequestId);
+            if ($firstRequest) {
+                $year  = $firstRequest->created_at->year;
+                $month = $firstRequest->created_at->month;
+                $purchaseRequirements = ReportService::getPurchaseRequirement($year, $month);
+                $totalPrice = $purchaseRequirements->sum('subtotal');
+            }
 
             ActivityLog::create([
                 'user_id' => Auth::id(),
                 'activity_type' => 'monthly_supply',
                 'message' => "Successfully updated {$updatedCount} supply request statuses.",
             ]);
-
 
             return redirect()->back()->with([
                 'success' => "Successfully updated {$updatedCount} supply request statuses.",
@@ -255,6 +259,7 @@ class SupplyFormController extends Controller
 
         return redirect()->back()->with('error', 'Invalid request type.');
     }
+
 
 
     public function delete(Request $request)
