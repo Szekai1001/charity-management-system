@@ -18,6 +18,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-center">
+                    @if(!empty($approvedStudents) && $approvedStudents->count())
                     @forelse($approvedStudents as $approvedStudent)
                     <tr>
                         <td><input type="checkbox" name="student_ids[]" class="student-checkbox" value="{{$approvedStudent->user->student->id}}"></td>
@@ -84,6 +85,7 @@
                         </td>
                     </tr>
                     @endforelse
+                    @endif
                 </tbody>
             </table>
         </div>
