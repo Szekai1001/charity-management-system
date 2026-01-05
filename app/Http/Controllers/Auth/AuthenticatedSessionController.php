@@ -32,16 +32,17 @@ class AuthenticatedSessionController extends Controller
 
         // Teacher redirect
         if ($user->role === 'teacher') {
-            return redirect()->intended('/teacher/dashboard');
+            return redirect('/teacher/dashboard');
         }
 
-        // Student redirect
+        // Student redirect (Force redirect, remove 'intended')
         if ($user->role === 'beneficiary') {
-            return redirect()->intended('/beneficiary/dashboard');
+            return redirect('/beneficiary/dashboard');
         }
 
+        // Admin redirect (Force redirect, remove 'intended')
         if ($user->role === 'admin') {
-            return redirect()->intended('admin/dashboard');
+            return redirect('/admin/dashboard');
         }
 
         // Default

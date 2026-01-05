@@ -138,7 +138,7 @@
                 </p>
 
                 <div class="d-flex gap-3">
-                    <a href="#contact" class="btn btn-danger px-4 py-2 rounded-3 fw-bold" style="background-color: var(--theme-pink); border:none;">
+                    <a href="{{ route('activities') }}" class="btn btn-danger px-4 py-2 rounded-3 fw-bold" style="background-color: var(--theme-pink); border:none;">
                         Contact Us
                     </a>
                 </div>
