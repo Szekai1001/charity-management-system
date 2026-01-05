@@ -73,7 +73,22 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <span class="badge bg-soft-success rounded-pill"><i class="bi bi-arrow-up"></i> {{ $studentPercentage }}%</span>
+                        @if($studentPercentage > 0)
+                        <span class="badge bg-soft-success rounded-pill">
+                            <i class="bi bi-arrow-up"></i> {{ $studentPercentage }}%
+                        </span>
+
+                        @elseif($studentPercentage < 0)
+                            <span class="badge bg-soft-danger rounded-pill">
+                                <i class="bi bi-arrow-down"></i> {{ $studentPercentage }}%
+                            </span>
+
+                        @else
+                            <span class="badge bg-soft-warning rounded-pill">
+                                <i class="bi bi-dash"></i> 0%
+                            </span>
+                        @endif
+
                         <span class="text-muted small ms-1">vs last month</span>
                     </div>
                 </div>
