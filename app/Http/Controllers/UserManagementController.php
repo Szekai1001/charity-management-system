@@ -208,7 +208,7 @@ class UserManagementController extends Controller
 
                 // B. Update Teacher Profile
                 $teacherUpdates = [];
-                if ($request->filled('phone')) $teacherUpdates['phone'] = $request->input('phone');
+                if ($request->filled('phone')) $teacherUpdates['phone_number'] = $request->input('phone');
                 if ($request->filled('education_level')) $teacherUpdates['education_level'] = $request->input('education_level');
 
                 if (!empty($teacherUpdates)) {
