@@ -448,6 +448,15 @@
             return;
         }
 
+        // Get today's date (YYYY-MM-DD)
+        const today = new Date().toISOString().split('T')[0];
+
+        // Check date must be after today
+        if (date <= today) {
+            alert('Please select a date after today.');
+            return;
+        }
+
 
         const session = sessionInput.value;
 
