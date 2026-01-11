@@ -226,7 +226,7 @@
                 <p class="text-muted mb-0">Manage employee hourly rates and calculate salaries.</p>
                 @break
                 @case('packages.index')
-                <p class="text-muted mb-0">Manage packages, delivery da tes, and sessions</p>
+                <p class="text-muted mb-0">Manage packages, delivery dates, and sessions</p>
                 @break
                 @case('admin.packages')
                 <p class="text-muted mb-0">Manage packages and their items with full add and edit capabilities.</p>

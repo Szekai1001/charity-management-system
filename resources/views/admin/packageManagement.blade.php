@@ -329,7 +329,7 @@
                             <th>
                                 <a href="{{ route('admin.packages', ['tab' => 'editItem','sort' => 'price','order' => request('sort') === 'price' && request('order') === 'asc' ? 'desc' : 'asc']) }}"
                                     class="text-decoration-none text-dark d-flex align-items-center gap-1">
-                                    <span>Price</span>
+                                    <span>Price (RM)</span>
                                     <!-- show arrow for all sortable columns -->
                                     <i class="bi fs-5 {{ request('sort') === 'price' ? (request('order') === 'asc' ? 'bi-arrow-up-short text-dark' : 'bi-arrow-down-short text-dark') : 'bi-arrow-down-up text-secondary fs-6' }}">
                                     </i>
