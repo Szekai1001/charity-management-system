@@ -14,7 +14,7 @@
         <div class="col-md-2">
             <label for="month" class="form-label">Month:</label>
             <select name="month" id="month" class="form-select filter shadow-sm">
-                <option value="">-- Select Month --</option>
+                <option value="" disabled>-- Select Month --</option>
                 @foreach (range(1, 12) as $m)
                 <option value="{{ $m }}"
                     {{ (int) request('month', now()->month) === (int)$m ? 'selected' : '' }}>
