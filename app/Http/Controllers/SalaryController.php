@@ -63,8 +63,8 @@ class SalaryController extends Controller
             
             $salaryDate = Carbon::create($calcYear, $calcMonth, 1);
 
-            if($teacher->created_at->gt($salaryDate)){
-                return;
+            if($teacher->created_at->gt($salaryDate)){  
+                continue;
             }
 
             if (!$existing) {
