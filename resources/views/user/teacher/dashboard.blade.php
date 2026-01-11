@@ -173,7 +173,7 @@
                 </ul>
             </div>
             <div class="card-footer bg-white border-0 text-center py-2">
-                {{ $studentsPag->links() }}
+                {{ $studentsPag->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
