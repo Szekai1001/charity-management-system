@@ -1,41 +1,98 @@
-<h4>Supply Distribution Report</h4>
-
-@if($year || $month)
-    <p>
-        @if($month) Month: {{ $month }} @endif 
-        @if($year) Year: {{ $year }} @endif
-    </p>
-@endif
-
 <table>
     <thead>
         <tr>
-            <th>Supply Request ID</th>
-            <th>Beneficiary ID</th>
-            <th>Beneficiary Name</th>
-            <th>Package</th>
-            <th>Date</th>
-            <th>Session</th>
-            <th>Distribution Method</th>
-            <th>Status</th>
+            <td colspan="8"
+                style="font-size: 18px; font-weight: bold; text-align: center; height: 30px; vertical-align: middle;">
+                Supply Distribution Report
+            </td>
+        </tr>
+
+        @if($year || $month)
+        <tr>
+            <td colspan="8" style="text-align: center; font-style: italic; color: #555555;">
+                @if($month) Month: <strong>{{ $month }}</strong> @endif
+
+                {{-- Show separator only if both exist --}}
+                @if($month && $year) &nbsp;|&nbsp; @endif
+
+                @if($year) Year: <strong>{{ $year }}</strong> @endif
+            </td>
+        </tr>
+        @endif
+
+        <tr>
+            <td colspan="8"></td>
+        </tr>
+
+        <tr>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 15px;">
+                Supply ID
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 15px;">
+                Beneficiary ID
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: left; width: 30px;">
+                Beneficiary Name
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: left; width: 25px;">
+                Package
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 20px;">
+                Date
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 15px;">
+                Session
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 25px;">
+                Distribution Method
+            </th>
+            <th style="font-weight: bold; border: 1px solid #000000; background-color: #dbe5f1; text-align: center; width: 15px;">
+                Status
+            </th>
         </tr>
     </thead>
+
     <tbody>
         @forelse($supplyRequests as $supplyRequest)
-            <tr>
-                <td>{{ $supplyRequest->id }}</td>
-                <td>{{ $supplyRequest->beneficiary->id ?? '-' }}</td>
-                <td>{{ $supplyRequest->beneficiary->name ?? '-' }}</td>
-                <td>{{ $supplyRequest->package->name ?? '-' }}</td>
-                <td>{{ $supplyRequest->delivery_date->date ?? '-' }}</td>
-                <td>{{ $supplyRequest->delivery_date->session ?? '-' }}</td>
-                <td>{{ $supplyRequest->distribution_method ?? '-' }}</td>
-                <td>{{ $supplyRequest->distribution_status ?? '-' }}</td>
-            </tr>
+        <tr>
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ $supplyRequest->id }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ $supplyRequest->beneficiary->id ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: left;">
+                {{ $supplyRequest->beneficiary->name ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: left;">
+                {{ $supplyRequest->package->name ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ $supplyRequest->delivery_date->date ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ $supplyRequest->delivery_date->session ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ $supplyRequest->distribution_method ?? '-' }}
+            </td>
+
+            <td style="border: 1px solid #000000; text-align: center;">
+                {{ ucfirst($supplyRequest->distribution_status) ?? '-' }}
+            </td>
+        </tr>
         @empty
-            <tr>
-                <td colspan="8">No records found</td>
-            </tr>
+        <tr>
+            <td colspan="8" style="border: 1px solid #000000; text-align: center;">
+                No records found
+            </td>
+        </tr>
         @endforelse
     </tbody>
 </table>
