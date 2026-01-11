@@ -60,6 +60,12 @@ class SalaryController extends Controller
             // -- DB Update --
             $existing = Salary::where('teacher_id', $teacher->id)
                 ->where('year', $calcYear)->where('month', $calcMonth)->first();
+            
+            $salaryDate = Carbon::create($calcYear, $calcMonth, 1);
+
+            if($teacher->created_at->gt($salaryDate)){
+                return;
+            }
 
             if (!$existing) {
                 Salary::create([
