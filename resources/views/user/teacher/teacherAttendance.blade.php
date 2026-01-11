@@ -58,45 +58,97 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let debounceTimer;
+        const container = document.getElementById('teacherAttendanceDetails');
 
+        /**
+         * 1. CORE FETCH FUNCTION
+         * Handles the AJAX request and updates the HTML container
+         */
+        const fetchData = (url) => {
+            if (!container) return;
+
+            // Visual feedback: dim the table while loading
+            container.style.opacity = '0.5';
+
+            fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Crucial for Laravel $request->ajax()
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    // Update the container with the 'adminHtml' from your JSON response
+                    container.innerHTML = data.adminHtml;
+                    container.style.opacity = '1';
+
+                    // Optional: Scroll back to the top of the table after update
+                    container.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    container.style.opacity = '1';
+                });
+        };
+
+        /**
+         * 2. FILTER INPUT LOGIC
+         * Gathers current filter values and triggers fetchData
+         */
         const sendRequest = () => {
-            // 1. Get values using the correct IDs
             const params = {
                 'taYear': document.getElementById('td-log-year')?.value || '',
                 'taMonth': document.getElementById('td-log-month')?.value || '',
                 'taStatus': document.getElementById('td-log-status')?.value || '',
-            }
+            };
 
-            const container = document.getElementById('teacherAttendanceDetails');
-            if(container) container.style.opacity = '0.5';
+            const baseUrl = "{{ route('attendance.teacherFilter') }}";
+            const url = `${baseUrl}?${new URLSearchParams(params).toString()}`;
 
-            fetch("{{ route('attendance.teacherFilter') }}?" + new URLSearchParams(params))
-                .then(response => response.json()) // <--- CHANGED: expecting JSON now
-                .then(data => {
-                    if(container) {
-                        // <--- CHANGED: Access the 'adminHtml' key from your JSON
-                        container.innerHTML = data.adminHtml; 
-                        container.style.opacity = '1';
+            fetchData(url);
+        };
+
+        /**
+         * 3. PAGINATION CLICK INTERCEPTOR (Event Delegation)
+         * Stops the browser from following the link and uses AJAX instead
+         */
+        if (container) {
+            container.addEventListener('click', function(e) {
+                // Check if the clicked element (or its parent) is a pagination link
+                const link = e.target.closest('.pagination a');
+
+                if (link) {
+                    e.preventDefault(); // STOP the raw JSON from appearing
+                    const url = link.getAttribute('href');
+
+                    if (url && url !== '#') {
+                        fetchData(url);
                     }
-                })
-                .catch(error => {
-                    console.error('Error: ', error);
-                    // Fallback: If the controller actually returns text/html on error
-                    // remove this if you only ever return JSON
-                    if(container) container.style.opacity = '1';
-                });
+                }
+            });
         }
 
+        /**
+         * 4. EVENT LISTENERS FOR FILTERS
+         */
         document.querySelectorAll('input.filter, select.filter').forEach(el => {
+            // Handle dropdown changes
             if (el.tagName === 'SELECT') {
                 el.addEventListener('change', sendRequest);
             }
+
+            // Handle text input with debounce (waiting for user to stop typing)
             if (el.tagName === 'INPUT') {
                 el.addEventListener('keyup', function() {
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(sendRequest, 500);
                 });
-                el.addEventListener('change', sendRequest); 
+                el.addEventListener('change', sendRequest);
             }
         });
     });
