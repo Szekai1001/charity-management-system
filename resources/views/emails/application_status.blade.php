@@ -8,7 +8,8 @@
 @if($applicationType === 'beneficiary')
 You can now log in to your account and start using our services.
 @else
-Your records have been updated in our system. You do not need to take any further action at this time.
+{{-- Updated Student Message --}}
+Your application has been successful. Please wait for the **PKKM Batu Pahat** team to contact you regarding the next steps.
 @endif
 </x-mail::panel>
 
@@ -21,7 +22,7 @@ Go to Website
 
 @elseif(strtolower($status) === 'rejected')
 <x-mail::panel>
-⚠️ **Application Update** We regret to inform you that your application for the **{{ $type }}** program has been rejected.  
+⚠️ **Application Update** We regret to inform you that your application for the **{{ $applicationType }}** program has been rejected.  
 Please contact our support team if you have any questions.
 </x-mail::panel>
 @endif
