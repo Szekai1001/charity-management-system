@@ -19,6 +19,14 @@ class StudentController extends Controller
     public function create()
     {
         $userId = Auth::id();
+
+        $user = Auth::user();
+
+        // 1. Check if they are already a Student (Approved)
+        if ($user->role === 'student') {
+            return redirect()->route('home')->with('info', 'You are already registered for the Transit Service.');
+        }
+
         $formControl = FormControl::where('form_type', 'student') //Check form type = student
             ->whereDate('open_date', '<=', now())
             ->whereDate('close_date', '>=', now())
