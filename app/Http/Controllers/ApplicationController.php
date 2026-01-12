@@ -86,102 +86,85 @@ class ApplicationController extends Controller
 
     public function updateMultiple(Request $request, $id)
     {
-        if ($id === 'bulk') {
-            $statuses = $request->input('statuses');
-            $type = $request->input('type'); // For redirecting back with filter
-            $tab = $request->input('tab', 'student');
+        if ($id !== 'bulk') {
+            return redirect()->back()->with('error', 'Invalid request type.');
+        }
 
-            if (!$statuses || !is_array($statuses)) {
-                return redirect()->back()->with('error', 'No status changes were submitted.');
+        $statuses = $request->input('statuses');
+        $type = $request->input('type');
+        $tab = $request->input('tab', 'student');
+
+        if (!$statuses || !is_array($statuses)) {
+            return redirect()->back()->with('error', 'No status changes were submitted.');
+        }
+
+        $updatedCount = 0;
+
+        foreach ($statuses as $applicationId => $status) {
+            $application = Application::find($applicationId);
+            $status = strtolower($status);
+
+            // 1. Basic Validation
+            if (!$application || !in_array($status, ['approved', 'processing', 'rejected'])) {
+                continue;
             }
 
-            $updatedCount = 0;
-           
+            $user = $application->user;
 
-            foreach ($statuses as $applicationId => $status) {
-                $application = Application::find($applicationId);
+            // 2. Update Application Status (Done once for all cases)
+            $application->status = $status;
+            $application->save();
+            $updatedCount++;
 
-                if ($application && in_array(strtolower($status), ['approved', 'processing', 'rejected'])) {
-                    $user = $application->user;
+            // 3. Logic for 'Approved' (Role & QR Code)
+            if ($status === 'approved' && $user) {
+                switch (strtolower($application->application_type)) {
+                    case 'student':
+                        $user->role = 'student';
+                        $user->save();
 
-                    // Handle rejected separately
-                    if (strtolower($status) === 'rejected') {
-                        $application->status = strtolower($status);
-                        $application->save();
-                        $updatedCount++;
+                        if ($user->student && !$user->student->qr_code) {
+                            do {
+                                $qrCode = strtoupper(Str::random(10));
+                            } while (Student::where('qr_code', $qrCode)->exists());
 
-                        if ($user && $user->email) {
-                            Mail::to($user->email)->send(new ApplicationStatusMail(
-                                $user->name,
-                                $status,
-                                $application->application_type
-                            ));
+                            $user->student->qr_code = $qrCode;
+                            $user->student->save();
                         }
+                        break;
 
-                        
-
-                        continue;
-                    }
-
-                    // Update application status for other cases
-                    $application->status = strtolower($status);
-                    $application->save();
-                    $updatedCount++;
-
-                    // Only update role and send messages if approved
-                    if (strtolower($status) === 'approved' && $application->user) {
-                        $user = $application->user;
-
-                        $phone = null;
-
-                        switch (strtolower($application->application_type)) {
-                            case 'student':
-                                $user->role = 'student';
-                                $user->save();
-                                $phone = $user->student->phone ?? null;
-
-                                if ($user->student && !$user->student->qr_code) {
-                                    do {
-                                        $qrCode = strtoupper(Str::random(10));
-                                    } while (Student::where('qr_code', $qrCode)->exists());
-
-                                    $user->student->qr_code = $qrCode;
-                                    $user->student->save();
-                                }
-                                break;
-
-                            case 'beneficiary':
-                                $user->role = 'beneficiary';
-                                $user->save();
-                                $phone = $user->beneficiary->phone_number ?? null;
-                                break;
-                        }
-
-                        // Send email
-                        if ($user && $user->email) {
-                            Mail::to($user->email)->queue(new ApplicationStatusMail(
-                                $user->name,
-                                $status,
-                                $application->application_type
-                            ));
-
-                            usleep(1000000); // 0.3s delay to avoid Mailtrap rate limit
-                        }
-                    }
+                    case 'beneficiary':
+                        $user->role = 'beneficiary';
+                        $user->save();
+                        break;
                 }
             }
 
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'activity_type' => 'application_update',
-                'message' => "Successfully updated {$updatedCount} application(s).",
-            ]);
+            // 4. THE EMAIL PART (Queued with a staggered delay)
+            if ($user && $user->email && in_array($status, ['approved', 'rejected'])) {
+                // Spreading emails by 5 seconds each in the background 
+                // so Mailtrap doesn't block your queue.
+                $delay = $updatedCount * 5;
 
-
-            return redirect()->route('application.index', ['type' => $type, 'tab' => $tab])
-                ->with('success', "Successfully updated {$updatedCount} applications.");
+                Mail::to($user->email)->later(
+                    now()->addSeconds($delay),
+                    new ApplicationStatusMail(
+                        $user->name,
+                        $status,
+                        $application->application_type
+                    )
+                );
+            }
         }
 
-        return redirect()->back()->with('error', 'Invalid request type.');
+        // 5. Activity Log
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'activity_type' => 'application_update',
+            'message' => "Successfully updated {$updatedCount} application(s).",
+        ]);
+
+        return redirect()->route('application.index', ['type' => $type, 'tab' => $tab])
+            ->with('success', "Successfully updated {$updatedCount} applications.");
     }
 }
