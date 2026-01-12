@@ -89,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
 | Registration Forms (Admin & User)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', RoleMiddleware::class . ':admin,user'])->prefix('form')->group(function () {
+Route::middleware(['auth', RoleMiddleware::class . ':admin,user,student'])->prefix('form')->group(function () {
     Route::get('/studentForm', [StudentController::class, 'create'])->name('student.form');
     Route::post('/studentForm', [StudentController::class, 'store'])->name('student.store');
 
