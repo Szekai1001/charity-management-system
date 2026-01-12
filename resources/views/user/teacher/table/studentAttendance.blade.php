@@ -154,7 +154,7 @@
                                 </div>
                                 <div>
                                     <div class="text-dark fw-bold">{{ $studentAttendance->student->name }}</div>
-                                    <div class="text-muted small">ID: {{ $studentAttendance->student->user->email }}</div>
+                                    <div class="text-muted small">Email: {{ $studentAttendance->student->user->email }}</div>
                                 </div>
                             </div>
                         </td>

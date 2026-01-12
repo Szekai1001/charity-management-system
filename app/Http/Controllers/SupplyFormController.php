@@ -221,12 +221,14 @@ class SupplyFormController extends Controller
                     $supplyRequest->distribution_status = $status;
                     $supplyRequest->save();
 
+                    $supplyRequestMonthYear = $supplyRequest->created_at->format('F Y');
+
                     // Send notification only to the specific beneficiary
                     if ($supplyRequest->beneficiary) {
                         Notification::create([
                             'user_id' => $supplyRequest->beneficiary->user_id,
                             'title' => 'Supply Request Update',
-                            'message' => "Your monthly supply application status has been updated to " . ucfirst($status) . ".",
+                            'message' => "Your monthly supply application status for {$supplyRequestMonthYear} has been updated to " . ucfirst($status) . ".",
                             'type' => 'supply_request',
                             'is_read' => 0,
                         ]);
