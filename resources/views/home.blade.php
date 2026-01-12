@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('title', 'Home')
+@include('components.alers')
 
 @section('content')
 
