@@ -217,7 +217,7 @@ class SupplyFormController extends Controller
             foreach ($statuses as $supplyRequestId => $status) {
                 $supplyRequest = \App\Models\SupplyRequest::find($supplyRequestId);
 
-                if ($supplyRequest && in_array($status, ['approved', 'pending', 'delivered', 'rejected'])) {
+                if ($supplyRequest && $supplyRequest->distribution_status !== $status && in_array($status, ['approved', 'pending', 'delivered', 'rejected'])) {
                     $supplyRequest->distribution_status = $status;
                     $supplyRequest->save();
 
