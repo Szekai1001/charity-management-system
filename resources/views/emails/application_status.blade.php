@@ -5,16 +5,16 @@
 <x-mail::panel>
 🎉 **Congratulations!** Your application for the **{{ $applicationType }}** program has been approved.  
 
-@if($applicationType === 'beneficiary')
+{{-- Use strtolower here to ensure 'Beneficiary' or 'beneficiary' both work --}}
+@if(strtolower($applicationType) === 'beneficiary')
 You can now log in to your account and start using our services.
 @else
-{{-- Updated Student Message --}}
+{{-- This will now correctly show only for students --}}
 Your application has been successful. Please wait for the **PKKM Batu Pahat** team to contact you regarding the next steps.
 @endif
 </x-mail::panel>
 
-{{-- Only show the button if they are a beneficiary --}}
-@if($applicationType === 'beneficiary')
+@if(strtolower($applicationType) === 'beneficiary')
 <x-mail::button :url="url('/')">
 Go to Website
 </x-mail::button>

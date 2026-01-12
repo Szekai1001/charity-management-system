@@ -141,19 +141,15 @@ class ApplicationController extends Controller
             }
 
             // 4. THE EMAIL PART (Queued with a staggered delay)
+            // 4. THE EMAIL PART (Immediate Queue)
             if ($user && $user->email && in_array($status, ['approved', 'rejected'])) {
-                // Spreading emails by 5 seconds each in the background 
-                // so Mailtrap doesn't block your queue.
-                $delay = $updatedCount * 5;
-
-                Mail::to($user->email)->later(
-                    now()->addSeconds($delay),
-                    new ApplicationStatusMail(
-                        $user->name,
-                        $status,
-                        $application->application_type
-                    )
-                );
+                // This sends the job to the queue instantly. 
+                // Your 'php artisan queue:work' will pick it up immediately.
+                Mail::to($user->email)->queue(new ApplicationStatusMail(
+                    $user->name,
+                    $status,
+                    $application->application_type
+                ));
             }
         }
 
