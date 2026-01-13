@@ -63,6 +63,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             checkboxes.forEach(cb => cb.checked = e.target.checked);
         }
+
+        if (e.target.classList.contains('select-beneficiary')) {
+            console.log("✅ Beneficiary select-all triggered (via delegation)");
+
+            let table = e.target.closest('table');
+            if (!table) return;
+
+            let checkboxes = table.querySelectorAll('input[name="beneficiary_ids[]"]');
+            console.log("Beneficiary checkboxes found:", checkboxes.length);
+
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+        }
     });
 
     document.addEventListener("click", function (e) {
