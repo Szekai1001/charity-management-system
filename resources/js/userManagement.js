@@ -68,7 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("✅ Beneficiary select-all triggered (via delegation)");
 
             let table = e.target.closest('table');
-            if (!table) return;
+            if (!table) {
+                console.error("Could not find table for beneficiary!");
+                return;
+            }
 
             let checkboxes = table.querySelectorAll('input[name="beneficiary_ids[]"]');
             console.log("Beneficiary checkboxes found:", checkboxes.length);
@@ -92,31 +95,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ✅ Print QR Button
-        document.addEventListener('click', function (e) {
-            const btn = e.target.closest('.print-qr-btn');
-            if (!btn) return; // Not a print button, ignore
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.print-qr-btn');
+        if (!btn) return; // Not a print button, ignore
 
-            const qrId = btn.dataset.qrId; // Get QR code element ID
-            const qrElement = document.getElementById(qrId);
-            if (!qrElement) return;
+        const qrId = btn.dataset.qrId; // Get QR code element ID
+        const qrElement = document.getElementById(qrId);
+        if (!qrElement) return;
 
-            // Temporarily change ID for printing
-            qrElement.setAttribute("id", "print-area");
+        // Temporarily change ID for printing
+        qrElement.setAttribute("id", "print-area");
 
-            // Trigger print
-            window.print();
+        // Trigger print
+        window.print();
 
-            // Restore original ID
-            qrElement.setAttribute("id", qrId);
+        // Restore original ID
+        qrElement.setAttribute("id", qrId);
 
-            // Restore modal focus
-            const modalEl = document.querySelector('.modal.show');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            setTimeout(() => {
-                if (modalInstance) {
-                    modalInstance._element.focus();
-                }
-            }, 300);
-        });
+        // Restore modal focus
+        const modalEl = document.querySelector('.modal.show');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        setTimeout(() => {
+            if (modalInstance) {
+                modalInstance._element.focus();
+            }
+        }, 300);
+    });
 
 });
