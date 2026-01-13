@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.addEventListener('change', function (e) {
+        console.log("🔥 SCRIPT VERSION: 2.0 (New Code Loaded)");
         // ✅ Handle dynamically loaded student checkboxes
         if (e.target.classList.contains('select-student')) {
             console.log("✅ Student select-all triggered (via delegation)");
